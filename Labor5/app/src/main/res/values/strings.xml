@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">QuizApp</string>
+    <string name="quiz">Quiz App</string>
+    <string name="your_name">Your name</string>
+    <string name="get_started">Get Started</string>
+    <string name="chooseContactbtn">CHOOSE CONTACT</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

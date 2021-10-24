@@ -1,0 +1,50 @@
+--Kotlin is developed by?
+JetBrains
+Google
+Microsoft
+Adobe
+--Which of following is used to handle null exceptions in Kotlin?
+Elvis operator
+Sealed Class
+Range
+Lambda function
+--Which file extension is used to save Kotlin files?
+.kt or .kts
+.java
+.kot
+.android
+--What is an immutable variable?
+A variable that cannot change, read-only
+A variable that can be changed
+A variable used for string interpolation
+A variable that can be changed only once
+--What is a correct way to create an arraylist in Kotlin?
+val list = arrayListOf(1, 2, 3)
+val map = hashMapOf(1 to "one", 2 to "two", 3 to "three")
+val set = hashSetOf(1, 2, 3)
+enum class Color {RED, GREEN, BLUE}
+--Which of the followings constructors are available in Kotlin?
+Primary constructor and secondary constructor
+Primary constructor
+Secondary constructor
+None of these answers
+--Which of the following extension methods are used in Kotlin?
+All of the other answers
+Buffer reader ()
+Read texts () & Headlines ()
+Read each line ()
+--Which of the following is not basic data type in Kotlin?
+Lists
+Strings
+Arrays
+Numbers
+--Kotlin was developed under the ......... license.
+Apache 2.0
+Apache 1.0
+Apache 1.1
+None of the answers
+--Is there a 'new' keyword in Kotlin?
+No
+Yes
+Kotlin has a keyword for instance creation, but it is not 'new'
+Kotlin doesn't have instance creation
