@@ -1,3 +1,4 @@
+import com.example.quizapp.models.Question
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -5,9 +6,9 @@ class QuizController
 {
     private val questions = mutableListOf<Question>()
     init{
-        if (File("question-answers.txt").isFile)
+        if (File("question_answers.txt").isFile)
         {
-            val lines = File("question-answers.txt").readLines()
+            val lines = File("question_answers.txt").readLines()
 
 
             for (i in 0..lines.size-1 step 5)

@@ -3,4 +3,8 @@
     <string name="your_name">Your name</string>
     <string name="get_started">Get Started</string>
     <string name="quiz">Quiz App</string>
+    <string name="question" />
+    <string name="firstAnswer" />
+    <string name="thirdAnswer" />
+    <string name="forthAnswer" />
 </resources>

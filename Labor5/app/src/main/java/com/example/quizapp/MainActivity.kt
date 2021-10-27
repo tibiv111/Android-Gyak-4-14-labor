@@ -17,6 +17,8 @@ import android.widget.TextView
 
 
 import android.provider.ContactsContract
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.viewModels
 
 
 import androidx.core.database.getStringOrNull
@@ -24,15 +26,19 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import com.example.quizapp.shared.SharedViewModel
 
 
-const val EXTRA_MESSAGE = "com.example.quizapp.MESSAGE"
 const val TAG_MAIN : String =  "MainActivity"
 const val REQUEST_SELECT_CONTACT = 1
 
 
 
-class MainActivity : AppCompatActivity(R.layout.fragment_quiz_start) {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var startButton : Button
     private lateinit var chooseContactButton : Button
@@ -41,62 +47,28 @@ class MainActivity : AppCompatActivity(R.layout.fragment_quiz_start) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        registerListeners()
-        initializeView()
-        if (savedInstanceState == null) {
-            val bundle = savedInstanceState
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                add<QuizStartFragment>(R.id.fragment_container_view, args = bundle)
-            }
-        }
+        Log.i(TAG_MAIN, "onCreate() called")
+        setContentView(R.layout.activity_main)
+        val model : SharedViewModel by viewModels()
+        //val navController = findNavController(R.id.nav_host_fragment)
+        //NavigationUI.setupActionBarWithNavController(this, navController)
+
     }
 
 
-    fun sendMessage(view: View) {
-        val editText = findViewById<EditText>(R.id.userName)
-        val message = editText.text.toString()
-        val intent = Intent(this, DisplayMessageActivity::class.java).apply {
-            putExtra(EXTRA_MESSAGE, message)
-        }
-        startActivity(intent)
-    }
-    private fun registerListeners()
+
+    class PickContact : ActivityResultContract<Int, Uri?>()
     {
-
-        chooseContactButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = ContactsContract.Contacts.CONTENT_TYPE
-
-            if (intent.resolveActivity(packageManager) != null) {
-                startActivityForResult(intent, REQUEST_SELECT_CONTACT)
-
+        override fun createIntent(context: Context, input: Int): Intent =
+            Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI).also {
+                it.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
             }
 
 
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return if (resultCode == RESULT_OK) intent?.data else null
         }
 
-
-
-    }
-    private fun initializeView()
-    {
-
-        userName = findViewById<TextView>(R.id.userName)
-        startButton = findViewById<Button>(R.id.startButton)
-        chooseContactButton = findViewById<Button>(R.id.chooseContactbtn)
-
-
-
-
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_SELECT_CONTACT && resultCode == Activity.RESULT_OK)
-        {
-            contactUri = data!!.data!!
-            getContactName()
-        }
     }
     private fun getContactName() {
         val cursor = contentResolver.query(contactUri!!,null,null,null,null)
@@ -106,6 +78,11 @@ class MainActivity : AppCompatActivity(R.layout.fragment_quiz_start) {
 
         }
     }
+
+
+
+
+
 
 
 
