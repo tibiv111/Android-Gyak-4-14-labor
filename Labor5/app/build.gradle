@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.quizapp"
-        minSdk 21
+        minSdk 24
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -29,12 +29,18 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding = true
+    }
+    compileSdkVersion 31
 }
+
 
 dependencies {
 
 
-
+    implementation "org.jetbrains.anko:anko-commons:0.10.8"
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation "androidx.fragment:fragment-ktx:1.4.0-alpha10"
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.activity:activity-ktx:1.4.0-rc01'

@@ -9,53 +9,62 @@
 
     <TextView
         android:id="@+id/questionText"
-        android:layout_width="326dp"
-        android:layout_height="144dp"
-        android:layout_marginTop="48dp"
+        android:layout_width="294dp"
+        android:layout_height="141dp"
+        android:layout_marginTop="60dp"
         android:text="@string/question"
-        app:layout_constraintBottom_toTopOf="@+id/answerGroup"
+        android:textAlignment="viewStart"
+        android:textColor="#673AB7"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
         android:id="@+id/answerGroup"
-        android:layout_width="325dp"
-        android:layout_height="223dp"
-        android:layout_marginBottom="120dp"
+        android:layout_width="290sp"
+        android:layout_height="242sp"
+        android:layout_marginBottom="64sp"
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.479"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/questionText"
+        app:layout_constraintVertical_bias="0.3">
 
         <RadioButton
             android:id="@+id/firstAnswer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="@string/firstAnswer" />
+            android:text="@string/firstAnswer"
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/secondAnswer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="@string/secondAnswer" />
+            android:text="@string/secondAnswer"
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/thirdAnswer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="@string/thirdAnswer" />
+            android:text="@string/thirdAnswer"
+            android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/forthAnswer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="@string/forthAnswer" />
+            android:text="@string/forthAnswer"
+            android:textSize="16sp" />
 
     </RadioGroup>
 
@@ -63,8 +72,8 @@
         android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="112dp"
-        android:text="@string/next_submit"
+        android:layout_marginBottom="76sp"
+        android:text="@string/next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

@@ -3,23 +3,31 @@ package com.example.quizapp.ui.quiz
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.database.getStringOrNull
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
+import com.example.quizapp.MainActivity
 //import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 import com.example.quizapp.REQUEST_SELECT_CONTACT
 import com.example.quizapp.shared.SharedViewModel
+import java.lang.ref.WeakReference
+import kotlin.coroutines.coroutineContext
 
 //import com.example.quizapp.models.QuizController
 //import com.example.quizapp.models.QuizViewModel
@@ -36,7 +44,7 @@ private const val ARG_PARAM2 = "param2"
  */
 //const val EXTRA_MESSAGE = "com.example.quizapp.MESSAGE"
 class QuizStartFragment : Fragment() {
-    private val TAG : String = "StartQuizFragment"
+    private val TAG: String = "StartQuizFragment"
     private var param1: String? = null
     private var param2: String? = null
 
@@ -44,9 +52,10 @@ class QuizStartFragment : Fragment() {
     private lateinit var userName: EditText
     private lateinit var startButton: Button
     private lateinit var chooseContactButton: Button
-    private val viewModel : SharedViewModel by activityViewModels()
-    private lateinit var  contactUri : Uri
-
+    lateinit var progressBar: ProgressBar
+    private lateinit var viewModel: SharedViewModel
+    private lateinit var contactUri: Uri
+    var myVariable = 10
 
 
     // Capture the layout's TextView and set the string as its text
@@ -68,13 +77,13 @@ class QuizStartFragment : Fragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                savedInstanceState: Bundle?): View?
-    {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_quiz_start, container, false)
         //BackButton()
-        if (view != null)
-        {
+        if (view != null) {
             initializeView(view)
             registerListeners()
         }
@@ -83,17 +92,17 @@ class QuizStartFragment : Fragment() {
         return view
     }
 
-    private fun initializeView(view: View)
-    {
+    private fun initializeView(view: View) {
         view.apply {
+
             userName = view.findViewById(R.id.userName)
             startButton = view.findViewById(R.id.startButton)
             chooseContactButton = view.findViewById(R.id.chooseContactbtn)
+            progressBar = view.findViewById(R.id.progressBar)
         }
     }
 
-    private fun registerListeners()
-    {
+    private fun registerListeners() {
         startButton.setOnClickListener { onStartButtonPressed() }
         val getContent = registerForActivityResult(
             ActivityResultContracts.PickContact(),
@@ -104,20 +113,24 @@ class QuizStartFragment : Fragment() {
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {
                         this.userName.setText(cursor.getString(0))
-                        //viewModel.changePlayerName(this.userName.text.toString())
+                        //viewModel.changePlayerName(userName.text)
                     }
                     cursor.close()
                 }
+
             })
+
+
+
         chooseContactButton.setOnClickListener()
         {
 
+            Log.d("contactTAG", "chooseContactButton starts")
             val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
             intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
 
             getContent.launch(null)
-
-
+            Log.d("contactTAG", "chooseContactButton ends")
 
         }
 
@@ -125,35 +138,36 @@ class QuizStartFragment : Fragment() {
     }
 
 
-    fun onStartButtonPressed()
-    {
-        findNavController().navigate(R.id.action_quizStartFragment_to_questionFragment)
+    fun onStartButtonPressed() {
+        val task = loadQuestionsAsyncTask(this)
+        task.execute(1)
+
+
     }
 
     private fun getContactName() {
-        val cursor = requireActivity().contentResolver.query(contactUri!!,null,null,null,null)
+        Log.d("contactTAG", "getContactName starts")
+        val cursor = requireActivity().contentResolver.query(contactUri, null, null, null, null)
         //
-        if(cursor!!.moveToFirst()){
-            val contactName = cursor.getStringOrNull(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+        if (cursor!!.moveToFirst()) {
+            val contactName =
+                cursor.getStringOrNull(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
             userName.setText(contactName)
 
         }
         cursor.close()
+        Log.d("contactTAG", "getContactName ends")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Log.d("contactTAG", "onActivityResult starts")
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_SELECT_CONTACT && resultCode == Activity.RESULT_OK)
-        {
+        if (requestCode == REQUEST_SELECT_CONTACT && resultCode == Activity.RESULT_OK) {
             contactUri = data!!.data!!
             getContactName()
         }
+        Log.d("contactTAG", "onActivityResult ends")
     }
-
-
-
-
-
 
 
     companion object {
@@ -174,10 +188,74 @@ class QuizStartFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
+
+        class loadQuestionsAsyncTask internal constructor(context: QuizStartFragment) :
+            AsyncTask<Int, String, String?>() {
+            private var resp: String? = null
+            private val fragmentReference: WeakReference<QuizStartFragment> = WeakReference(context)
+            private val viewModel: SharedViewModel by fragmentReference.get()!!.activityViewModels()
+
+
+            override fun onPreExecute() {
+                val fragment = fragmentReference.get()
+                if (fragment == null || fragment.isRemoving) return
+                {
+                    fragment.progressBar.visibility = View.VISIBLE
+                }
+
+
+
+            }
+
+            override fun doInBackground(vararg params: Int?): String? {
+                publishProgress("Loading questions") // Calls onProgressUpdate()
+                try {
+                    viewModel.loadQuestions()
+                    val time = params[0]?.times(1000)
+                    time?.toLong()?.let { Thread.sleep(it) }
+                    Log.i("logTest", "Here is the async function")
+                    publishProgress("Good luck!") // Calls onProgressUpdate()
+                    resp = "Loading finished"
+
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                    resp = e.message
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    resp = e.message
+                }
+
+                return resp
+            }
+            override fun onPostExecute(result: String?) {
+
+                //val activity = fragmentReference.get()
+                //if (activity == null || activity.isRemoving) return
+
+                val fragment = fragmentReference.get()
+                if (fragment == null || fragment.isRemoving) return
+                fragment.progressBar.visibility = View.GONE
+                fragment.myVariable = 100
+                findNavController(fragment).navigate(R.id.action_quizStartFragment_to_questionFragment)
+            }
+
+            override fun onProgressUpdate(vararg text: String?) {
+
+                val fragment = fragmentReference.get()
+                if (fragment == null || fragment.isRemoving) return
+
+                Toast.makeText(fragment.context, text.firstOrNull(), Toast.LENGTH_SHORT).show()
+
+
+            }
+
+
+
+
+        }
+
+
     }
-
-
-
-
 
 }

@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.i(TAG_MAIN, "onCreate() called")
         setContentView(R.layout.activity_main)
-        val model : SharedViewModel by viewModels()
+        //val model : SharedViewModel by viewModels()
         //val navController = findNavController(R.id.nav_host_fragment)
         //NavigationUI.setupActionBarWithNavController(this, navController)
 
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
     class PickContact : ActivityResultContract<Int, Uri?>()
     {
         override fun createIntent(context: Context, input: Int): Intent =
+
             Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI).also {
                 it.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
             }
@@ -70,27 +71,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    private fun getContactName() {
-        val cursor = contentResolver.query(contactUri!!,null,null,null,null)
-        if(cursor!!.moveToFirst()){
-            val contactName = cursor.getStringOrNull(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
-            userName.setText(contactName)
-
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //it annoyed me that the keyboard stayed after the button press, so I solved it (stackoverflow function)

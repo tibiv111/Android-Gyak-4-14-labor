@@ -2,6 +2,7 @@ package com.example.quizapp.ui.quiz
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 import com.example.quizapp.shared.SharedViewModel
 import android.widget.RadioButton
-import androidx.navigation.NavController
-import androidx.navigation.ui.NavigationUI
+//import com.example.quizapp.databinding.FragmentQuestionBinding
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,21 +29,31 @@ private const val ARG_PARAM2 = "param2"
  */
 class QuestionFragment : Fragment() {
 
-    private var param1: String? = null
+    private var isFirst: Boolean? = null
     private var param2: String? = null
 
     private val model : SharedViewModel by activityViewModels()
+    private lateinit var correctAnswer : String
     private lateinit var questionText: TextView
     private lateinit var answerGroup: RadioGroup
     private lateinit var nextButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("fragmentSELF", "onCreate happening")
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            if(it.getBoolean(ARG_PARAM1) == null)
+            {
+                isFirst = true
+                Log.d("fragmentSELF", "isFirst set to True on onCreate")
+            }
             param2 = it.getString(ARG_PARAM2)
         }
 
+
+
+
+        //val binding = FragmentQuestionBinding.inflate(layoutInflater)
 
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true){
@@ -53,14 +63,33 @@ class QuestionFragment : Fragment() {
             }
         })
 
+        Log.d("fragmentSELF", "onCreate happened")
+
     }
 
+    private fun startQuiz()
+    {
+        if(isFirst == true)
+        {
+            Log.d("fragmentSELF", "isFirst happened")
+            model.randomizeQuestions()
+            isFirst = false
+        }
+        changeQuestion()
+    }
     private fun initializeView(view: View)
     {
         view.apply {
+
+
             questionText = view.findViewById(R.id.questionText)
             answerGroup = view.findViewById(R.id.answerGroup)
             nextButton = view.findViewById(R.id.nextButton)
+            Log.d("fragmentSELF", "initializeView happened")
+            if (model.isLastQuestion())
+            {
+                nextButton.text = context.resources.getString(R.string.submit)
+            }
         }
 
 
@@ -68,48 +97,57 @@ class QuestionFragment : Fragment() {
     private fun registerListeners()
     {
 
-    }
-    /*
 
-    TODO()
-    fun onRadioButtonClicked(view: View) {
-        if (view is RadioButton) {
-            // Is the button now checked?
-            val checked = view.isChecked
+        Log.d("fragmentSELF", "registerListeners happening")
+        nextButton.setOnClickListener{
 
-            // Check which radio button was clicked
-            when (view.getId()) {
-                R.id.firstAnswer ->
-                    if (checked) {
-                        // Pirates are the best
-                    }
-                R.id.secondAnswer ->
-                    if (checked) {
-                        // Ninjas rule
-                    }
-                R.id.thirdAnswer ->
-                    if (checked) {
-                        // Ninjas rule
-                    }
-                R.id.forthAnswer ->
-                    if (checked) {
-                        // Ninjas rule
-                    }
+            val selectedOption: Int = answerGroup.checkedRadioButtonId
+            Log.d("logTest", selectedOption.toString())
+            if (selectedOption == -1)
+            {
+                Toast.makeText(this.context, "Choose an answer", Toast.LENGTH_SHORT).show()
             }
+            else
+            {
+                val radiobutton : RadioButton = view!!.findViewById<RadioButton>(selectedOption)
+                //Log.d("fragmentSELF", radiobutton.text.toString())
+                if (correctAnswer == radiobutton.text.toString())
+                {
+                    model.addCorrectAnswer()
+                }
+                if(model.isLastQuestion())
+                {
+                    findNavController().navigate(R.id.action_questionFragment_to_quizEndFragment)
+
+                }
+                else
+                {
+                    model.incrementCurrentQuestionNumber()
+                    answerGroup.clearCheck()
+                    findNavController().navigate(R.id.action_questionFragment_self)
+                }
+            }
+
         }
+        Log.d("fragmentSELF", "registerListeners happened")
     }
-    */
+
+
+
+
+
+
 
     private fun showExitDialog()
     {
         val alertDialog = AlertDialog.Builder(requireContext())
         alertDialog.apply {
-            //setIcon(R.mipmap.brain)
+
             setTitle("Exit")
             setMessage("Are you sure you want to end this quiz?")
             setPositiveButton("Yes") { _, _ ->
                 Toast.makeText(context, "Quiz ended", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.quizEndFragment)
+                findNavController().navigate(R.id.action_questionFragment_to_quizEndFragment)
             }
             setNegativeButton("No") { _, _ ->
                 Toast.makeText(context, "You can continue the quiz",Toast.LENGTH_SHORT).show()
@@ -130,30 +168,39 @@ class QuestionFragment : Fragment() {
         if (view != null)
         {
             initializeView(view)
+            registerListeners()
 
         }
+        Log.d("fragmentSELF", "onCreateView happened")
+        startQuiz()
         return view
+
     }
 
 
-    private fun doQuiz()
+
+    private fun changeQuestion()
     {
 
         //model.resetQuestions()
-        model.randomizeQuestions()
-        for(question in model.getQuestions())
-        {
-            val rightAnswer = question.answers[0]
-            question.answers.shuffle()
-            for (i in 0 until answerGroup.childCount) {
-                (answerGroup.getChildAt(i) as RadioButton).text = question.answers[i]
-            }
-            TODO()
+        Log.d("fragmentSELF", "changeQuestion happening")
+        questionText.text = model.getQuestions()[model.getCurrentQuestionNumber()].question //kerdes
+        correctAnswer = model.getCurrentCorrectAnswer()//jo valasz
+        model.getQuestions()[model.getCurrentQuestionNumber()].answers.shuffle() //valaszok keverese
 
-
-
-
+        for (i in 0 until answerGroup.childCount) {
+            (answerGroup.getChildAt(i) as RadioButton).text = model.getQuestions()[model.getCurrentQuestionNumber()].answers[i]
         }
+        Log.d("fragmentSELF", "changeQuestion happened")
+
+
+
+
+
+
+
+
+
     }
 
     /*
@@ -206,11 +253,12 @@ class QuestionFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(isFirst: Boolean, param2: String) =
             QuestionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
+                    putBoolean(ARG_PARAM1, isFirst)
                     putString(ARG_PARAM2, param2)
+                    Log.d("fragmentSELF", "newInstance comp obj happened")
                 }
             }
     }

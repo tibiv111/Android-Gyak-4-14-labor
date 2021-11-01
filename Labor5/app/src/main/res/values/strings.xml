@@ -7,9 +7,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="question" />
-    <string name="next_submit">Next</string>
+    <string name="next">Next</string>
+    <string name="submit">Submit</string>
+    <string name="resultPts">Points</string>
     <string name="firstAnswer" />
     <string name="secondAnswer" />
     <string name="thirdAnswer" />
     <string name="forthAnswer" />
+    <string name="quiz_result_title">Quiz Result</string>
+    <string name="quiz_result">TextView</string>
+    <string name="try_again_btn">Try Again</string>
 </resources>
