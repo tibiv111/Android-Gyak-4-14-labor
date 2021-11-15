@@ -1,10 +1,12 @@
-package com.example.quizapp.ui
+package com.example.quizapp.ui.home
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -21,6 +23,9 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var testYourSkillsBtn : Button
+    private lateinit var readQuestions : Button
+    private lateinit var createQuestion : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +33,7 @@ class HomeFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
     override fun onCreateView(
@@ -35,9 +41,41 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
+        //BackButton()
+        if (view != null) {
+            initializeView(view)
+            registerListeners()
+        }
+        return view
     }
 
+    private fun initializeView(view: View) {
+        view.apply {
+
+
+            testYourSkillsBtn = view.findViewById(R.id.startQuizBtn)
+            readQuestions = view.findViewById(R.id.readQuestionBtn)
+            createQuestion = view.findViewById(R.id.createQuestionBtn)
+
+
+
+            /*
+            userName = binding.userName
+            startButton = binding.startButton
+            chooseContactButton = binding.chooseContactbtn
+            progressBar = binding.progressBar
+            */
+        }
+    }
+
+    private fun registerListeners()
+    {
+        testYourSkillsBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_quizStartFragment)
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

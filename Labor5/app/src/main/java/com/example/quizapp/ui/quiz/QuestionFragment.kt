@@ -14,12 +14,16 @@ import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 import com.example.quizapp.shared.SharedViewModel
 import android.widget.RadioButton
+import com.example.quizapp.MainActivity
+//import com.example.quizapp.databinding.FragmentQuestionBinding
+//import com.example.quizapp.interfaces.DrawerLocker
+
 //import com.example.quizapp.databinding.FragmentQuestionBinding
 
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
+private var ARG_PARAM1 = "true"
 private const val ARG_PARAM2 = "param2"
 
 /**
@@ -29,31 +33,24 @@ private const val ARG_PARAM2 = "param2"
  */
 class QuestionFragment : Fragment() {
 
-    private var isFirst: Boolean? = null
+    private var isFirst: String? = "true"
     private var param2: String? = null
 
-    private val model : SharedViewModel by activityViewModels()
+
+    private val model: SharedViewModel by activityViewModels()
     private lateinit var correctAnswer : String
     private lateinit var questionText: TextView
     private lateinit var answerGroup: RadioGroup
     private lateinit var nextButton: Button
+    //private val binding = FragmentQuestionBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("fragmentSELF", "onCreate happening")
         arguments?.let {
-            if(it.getBoolean(ARG_PARAM1) == null)
-            {
-                isFirst = true
-                Log.d("fragmentSELF", "isFirst set to True on onCreate")
-            }
+            isFirst = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
-
-
-
-        //val binding = FragmentQuestionBinding.inflate(layoutInflater)
 
 
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true){
@@ -69,11 +66,10 @@ class QuestionFragment : Fragment() {
 
     private fun startQuiz()
     {
-        if(isFirst == true)
+        if(!model.isShuffled())
         {
-            Log.d("fragmentSELF", "isFirst happened")
+            Log.d("fragmentSELF", "First question happened")
             model.randomizeQuestions()
-            isFirst = false
         }
         changeQuestion()
     }
@@ -85,10 +81,18 @@ class QuestionFragment : Fragment() {
             questionText = view.findViewById(R.id.questionText)
             answerGroup = view.findViewById(R.id.answerGroup)
             nextButton = view.findViewById(R.id.nextButton)
+            /*
+            questionText = binding.questionText
+            answerGroup = binding.answerGroup
+            nextButton = binding.nextButton
+
+             */
             Log.d("fragmentSELF", "initializeView happened")
             if (model.isLastQuestion())
             {
                 nextButton.text = context.resources.getString(R.string.submit)
+
+
             }
         }
 
@@ -110,6 +114,7 @@ class QuestionFragment : Fragment() {
             else
             {
                 val radiobutton : RadioButton = view!!.findViewById<RadioButton>(selectedOption)
+
                 //Log.d("fragmentSELF", radiobutton.text.toString())
                 if (correctAnswer == radiobutton.text.toString())
                 {
@@ -117,6 +122,7 @@ class QuestionFragment : Fragment() {
                 }
                 if(model.isLastQuestion())
                 {
+
                     findNavController().navigate(R.id.action_questionFragment_to_quizEndFragment)
 
                 }
@@ -164,7 +170,8 @@ class QuestionFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_question, container, false)
 
-        //BackButton()TODO()
+
+
         if (view != null)
         {
             initializeView(view)
@@ -172,7 +179,10 @@ class QuestionFragment : Fragment() {
 
         }
         Log.d("fragmentSELF", "onCreateView happened")
+
+        (activity as MainActivity).setDrawerLocked(true)
         startQuiz()
+
         return view
 
     }
@@ -242,6 +252,8 @@ class QuestionFragment : Fragment() {
     }
     */
 
+
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -253,13 +265,14 @@ class QuestionFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(isFirst: Boolean, param2: String) =
+        fun newInstance(isFirst: String, param2: String) =
             QuestionFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(ARG_PARAM1, isFirst)
+                    putString(ARG_PARAM1, isFirst)
                     putString(ARG_PARAM2, param2)
-                    Log.d("fragmentSELF", "newInstance comp obj happened")
                 }
+                    Log.d("fragmentSELF", "newInstance comp obj happened")
+
             }
     }
 

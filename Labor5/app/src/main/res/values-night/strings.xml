@@ -7,4 +7,13 @@
     <string name="firstAnswer" />
     <string name="thirdAnswer" />
     <string name="forthAnswer" />
+    <string name="home">Home</string>
+    <string name="quiz_time">Quiz time</string>
+    <string name="profile">Profile</string>
+    <string name="list_of_questions">List of questions</string>
+    <string name="new_question">New Question</string>
+    <string name="enjoy_the_quiz">Enjoy the quiz</string>
+    <string name="menu_options">Menu options</string>
+    <string name="navigation_drawer_open">Open Navigation drawer</string>
+    <string name="navigation_drawer_close"> Close Navigation drawer</string>
 </resources>

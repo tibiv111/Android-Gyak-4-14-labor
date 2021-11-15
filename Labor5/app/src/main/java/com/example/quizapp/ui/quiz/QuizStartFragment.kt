@@ -25,6 +25,8 @@ import com.example.quizapp.MainActivity
 //import androidx.navigation.fragment.findNavController
 import com.example.quizapp.R
 import com.example.quizapp.REQUEST_SELECT_CONTACT
+//import com.example.quizapp.databinding.FragmentQuestionBinding
+//import com.example.quizapp.databinding.FragmentQuizStartBinding
 import com.example.quizapp.shared.SharedViewModel
 import java.lang.ref.WeakReference
 import kotlin.coroutines.coroutineContext
@@ -53,9 +55,11 @@ class QuizStartFragment : Fragment() {
     private lateinit var startButton: Button
     private lateinit var chooseContactButton: Button
     lateinit var progressBar: ProgressBar
-    private lateinit var viewModel: SharedViewModel
+    private val viewModel: SharedViewModel by activityViewModels()
     private lateinit var contactUri: Uri
+    //private lateinit var binding : FragmentQuizStartBinding
     var myVariable = 10
+    //
 
 
     // Capture the layout's TextView and set the string as its text
@@ -74,6 +78,7 @@ class QuizStartFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        //binding = FragmentQuizStartBinding.inflate(layoutInflater)
 
     }
 
@@ -95,10 +100,19 @@ class QuizStartFragment : Fragment() {
     private fun initializeView(view: View) {
         view.apply {
 
+
             userName = view.findViewById(R.id.userName)
             startButton = view.findViewById(R.id.startButton)
             chooseContactButton = view.findViewById(R.id.chooseContactbtn)
             progressBar = view.findViewById(R.id.progressBar)
+
+
+            /*
+            userName = binding.userName
+            startButton = binding.startButton
+            chooseContactButton = binding.chooseContactbtn
+            progressBar = binding.progressBar
+            */
         }
     }
 
@@ -113,7 +127,6 @@ class QuizStartFragment : Fragment() {
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {
                         this.userName.setText(cursor.getString(0))
-                        //viewModel.changePlayerName(userName.text)
                     }
                     cursor.close()
                 }
@@ -139,10 +152,18 @@ class QuizStartFragment : Fragment() {
 
 
     fun onStartButtonPressed() {
-        val task = loadQuestionsAsyncTask(this)
-        task.execute(1)
-
-
+        if(userName.text.isEmpty())
+        {
+            Toast.makeText(context, "Please choose a name", Toast.LENGTH_SHORT).show()
+        }
+        else
+        {
+            //viewModel.changePlayerName(userName.text.toString())
+            viewModel.changePlayerName(this.userName.text.toString())
+            findNavController().navigate(R.id.action_quizStartFragment_to_questionFragment)
+            //val task = loadQuestionsAsyncTask(this)
+            //task.execute(1)
+        }
     }
 
     private fun getContactName() {
@@ -150,8 +171,7 @@ class QuizStartFragment : Fragment() {
         val cursor = requireActivity().contentResolver.query(contactUri, null, null, null, null)
         //
         if (cursor!!.moveToFirst()) {
-            val contactName =
-                cursor.getStringOrNull(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
+            val contactName = cursor.getStringOrNull(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
             userName.setText(contactName)
 
         }
@@ -190,6 +210,7 @@ class QuizStartFragment : Fragment() {
             }
 
 
+        /*
         class loadQuestionsAsyncTask internal constructor(context: QuizStartFragment) :
             AsyncTask<Int, String, String?>() {
             private var resp: String? = null
@@ -255,7 +276,9 @@ class QuizStartFragment : Fragment() {
 
         }
 
-
+        */
     }
+
+
 
 }

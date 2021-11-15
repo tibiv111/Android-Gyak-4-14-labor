@@ -1,6 +1,6 @@
 package com.example.quizapp.models
 
-data class Question(val question : String, val answers : MutableList<String>)
+data class Question(val question : String, val answers : MutableList<String>, val questionType : String = "Single answer")
 {
 
 
@@ -11,6 +11,14 @@ data class Question(val question : String, val answers : MutableList<String>)
                 "c.) ${answers[2]}\n" +
                 "d.) ${answers[3]}\n"
 
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if ((other as Question).question == this.question)
+        {
+            return this.answers.zip((other as Question).answers).all { (x, y) -> x == y }
+        }
+        return false
     }
 
 

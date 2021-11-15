@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.HomeFragment">
+    tools:context=".ui.home.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="HOME" />
 
-</FrameLayout>
+
+    <Button
+        android:id="@+id/createQuestionBtn"
+        android:layout_width="229dp"
+        android:layout_height="66dp"
+        android:layout_marginBottom="72dp"
+        android:text="@string/create_question_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/readQuestionBtn"
+        android:layout_width="229dp"
+        android:layout_height="66dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/read_questions_btn"
+        app:layout_constraintBottom_toTopOf="@+id/createQuestionBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/startQuizBtn"
+        android:layout_width="229dp"
+        android:layout_height="66dp"
+        android:layout_marginTop="424dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/test_your_skills_btn"
+        app:layout_constraintBottom_toTopOf="@+id/readQuestionBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enjoy_the_quiz_app_where_you_can"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/startQuizBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.902" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

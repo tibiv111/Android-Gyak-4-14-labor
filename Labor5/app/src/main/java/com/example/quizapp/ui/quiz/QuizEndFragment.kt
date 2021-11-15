@@ -9,7 +9,10 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.quizapp.MainActivity
 import com.example.quizapp.R
+import com.example.quizapp.databinding.FragmentQuestionBinding
+import com.example.quizapp.databinding.FragmentQuizEndBinding
 import com.example.quizapp.shared.SharedViewModel
 import android.widget.Button as Button
 
@@ -30,7 +33,7 @@ class QuizEndFragment : Fragment() {
     private val model : SharedViewModel by activityViewModels()
     private lateinit var quizResult : TextView
     private lateinit var tryAgain_btn : Button
-
+    //private val binding = FragmentQuizEndBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +46,7 @@ class QuizEndFragment : Fragment() {
 
             override fun handleOnBackPressed() {
 
-                findNavController().navigate(R.id.action_quizEndFragment_to_quizStartFragment)
+                findNavController().navigate(R.id.action_quizEndFragment_to_homeFragment2)
 
             }
         })
@@ -56,18 +59,28 @@ class QuizEndFragment : Fragment() {
     private fun initializeView(view: View)
     {
         val points : String = model.getNumberOfCorrectAnswers().toString() + "/" + model.getNumberOfQuestions() + " points"
-        
+        (activity as MainActivity).setDrawerLocked(false)
         view.apply {
+
             quizResult = view.findViewById(R.id.quizResult)
             quizResult.text = points
             tryAgain_btn = view.findViewById(R.id.try_again_btn)
+
+
+
+            /*
+            quizResult = binding.quizResult
+            quizResult.text = points
+            tryAgain_btn = binding.tryAgainBtn
+
+             */
         }
     }
 
     private fun registerListeners()
     {
         tryAgain_btn.setOnClickListener{
-            findNavController().navigate(R.id.action_quizEndFragment_to_quizStartFragment)
+            findNavController().navigate(R.id.action_quizEndFragment_to_homeFragment2)
         }
     }
 
@@ -82,6 +95,8 @@ class QuizEndFragment : Fragment() {
             registerListeners()
 
         }
+
+        model.updatedHighScore()
         // Inflate the layout for this fragment
         return view
     }
