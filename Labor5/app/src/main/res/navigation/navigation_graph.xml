@@ -51,6 +51,14 @@
         <action
             android:id="@+id/action_homeFragment_to_questionListFragment"
             app:destination="@id/questionListFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_questionListFragment2"
+            app:destination="@id/questionListFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_questionAddragment"
+            app:destination="@id/questionAddragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -70,7 +78,7 @@
         <action
             android:id="@+id/action_questionAddragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/questionAddragment"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -75,6 +75,12 @@ class HomeFragment : Fragment() {
         testYourSkillsBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_quizStartFragment)
         }
+        readQuestions.setOnClickListener{
+            findNavController().navigate(R.id.action_homeFragment_to_questionListFragment)
+        }
+        createQuestion.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_questionAddragment)
+        }
     }
     companion object {
         /**
